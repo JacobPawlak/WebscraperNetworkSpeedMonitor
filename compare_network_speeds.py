@@ -72,7 +72,7 @@ def grab_fast_com_speed():
         #now we gotta click the show more button to get to the upload speed test (then let the page load for a sec)
         show_more_btn = driver.find_element_by_id('show-more-details-link')
         show_more_btn.click()
-        time.sleep(1)
+        time.sleep(.5)
         #now, once you click the show more button, the upload tests starts - this will take a little bit of time and its not really a predictable range. 
         # What we are looking for in this case is the little spinner icon to go from orange spinning to green success. we will watch for that using the class
         # made at the top of the HELPERS section. Edit: i really only want to do this if we have connection (a speed above 0), no need to waste time
