@@ -97,27 +97,9 @@ def grab_fast_com_speed():
 
         #these next two chunks are here to normalize the speeds to Megabytes per second, or adjust the speed back to -1 if there were errors in the page scrape
         #this first one is for the download speed
-        if(fast_d_units == 'Mbps'):
-            fast_adjusted_download = fast_download
-        elif(fast_d_units == 'Kbps'):
-            fast_adjusted_download = fast_download * .001
-        elif(fast_d_units == 'Gbps'):
-            fast_adjusted_download = fast_download * 1000
-        elif(fast_d_units == 'Bytes'):
-            fast_adjusted_download = fast_download * .000001
-        else:
-            fast_adjusted_download = -1
+        fast_adjusted_download = normalize_speed(fast_download, fast_d_units)
         #and this is for the upload speed
-        if(fast_u_units == 'Mbps'):
-            fast_adjusted_upload = fast_upload
-        elif(fast_u_units == 'Kbps'):
-            fast_adjusted_upload = fast_upload * .001
-        elif(fast_u_units == 'Gbps'):
-            fast_adjusted_upload = fast_upload * 1000
-        elif(fast_u_units == 'Bytes'):
-            fast_adjusted_upload = fast_upload * .000001
-        else:
-            fast_adjusted_upload = -1
+        fast_adjusted_upload = normalize_speed(fast_upload, fast_u_units)
 
     #there are a few errors that could be thrown during this but the most likely would be a timeout error on the wait statements
     except Exception as err:
@@ -152,27 +134,9 @@ def grab_sys_speed():
         sys_u_units = res_list[8].split()[2]
 
         #noramlizing here again to the Megabytes unit since that is pretty standard for speeds
-        if(sys_d_units == 'Mbit/s'):
-            sys_adjusted_download = sys_download
-        elif(sys_d_units == 'Kbit/s'):
-            sys_adjusted_download = sys_download * .001
-        elif(sys_d_units == 'Gbit/s'):
-            sys_adjusted_download = sys_download * 1000
-        elif(sys_d_units == 'Bit/s'):
-            sys_adjusted_download = sys_download * .000001
-        else:
-            sys_adjusted_download = -1
+        sys_adjusted_download = normalize_speed(sys_download, sys_d_units)
         #same here for upload speed
-        if(sys_u_units == 'Mbit/s'):
-            sys_adjusted_upload = sys_upload
-        elif(sys_u_units == 'Kbit/s'):
-            sys_adjusted_upload = sys_upload * .001
-        elif(sys_u_units == 'Gbit/s'):
-            sys_adjusted_upload = sys_upload * 1000
-        elif(sys_u_units == 'Bit/s'):
-            sys_adjusted_upload = sys_upload * .000001
-        else:
-            sys_adjusted_upload = -1
+        sys_adjusted_upload = normalize_speed(sys_upload, sys_u_units)
 
     #same error handling (or lack there of - we either get the numbers, or an error means no connection so its nbd)
     except Exception as err:
@@ -196,6 +160,22 @@ def write_out_to_csv(date, data_list):
             outfile.write(','.join(map(str, data_list)) + '\n')
 
     return
+
+#after talking to a friend about my code, i realized i needed to remove some excess bulk from two other helpers, and just turn it into another helper-helper
+def normalize_speed(speed, units):
+
+    #i am pulling out and combinging the normalization from both of the helper funtions
+    if(units == 'Mbit/s' or units == 'Mbps'):
+        return speed
+    elif(units == 'Kbit/s' or units == 'Kbps'):
+        return speed * .001
+    elif(units == 'Gbit/s' or units == 'Gbps'):
+        return speed * 1000
+    elif(units == 'Bit/s' or units == 'Bytes'):
+        return speed * .000001
+    else:
+        return -1    
+
 
 #################### MAIN () ####################
 
