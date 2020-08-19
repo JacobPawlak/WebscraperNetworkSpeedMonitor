@@ -63,13 +63,16 @@ def move_to_uploaded(csv_file):
 
     #using the os library here to move the file to the uploaded folder
     try:
-        os.replace('./CSVs/{}'.format(csv_file), './CSVs/Uploaded/{}'.format(csv_file))
+        if(os.path.exists('./CSVs/Uploaded/{}'.format(csv_file))):
+            os.replace('./CSVs/{}'.format(csv_file), './CSVs/Uploaded/{}_{}'.format(str(datetime.datetime.now().hour),csv_file))
+        else:
+            os.replace('./CSVs/{}'.format(csv_file), './CSVs/Uploaded/{}'.format(csv_file))
     #just to save face incase something errs out
     except FileNotFoundError as err:
         print("Oh no, looks like that file doesnt exist in the CSVs directory. Please check the error message... {}".format(err))
     except Exception as err:
         print("Wow things really hit the fan huh.. if it wasnt a file error it must have been {}".format(err))
-    
+
     return
 
 #################### MAIN () ####################
